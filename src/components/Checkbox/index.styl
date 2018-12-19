@@ -1,0 +1,41 @@
+.Checkbox
+    display inline-block
+    vertical-align middle
+    width 1.9rem
+    height 1.9rem
+    position relative
+    margin 0 .9rem 0 0
+
+    &-control
+        display none
+
+        &:checked
+            & ~ .Checkbox-label
+                background-color $blue
+
+                &:before
+                    opacity 1
+
+
+    &-label
+        cursor pointer
+        display block
+        width 100%
+        height 100%
+        background-color $x-light-gray
+        border .2rem solid transparent
+        user-select none
+        transition background .2s,border .2s
+        &:before
+            content ''
+            position absolute
+            top 50%
+            left 50%
+            width 1.2rem
+            height .7rem
+            border-left .3rem solid $white
+            border-bottom .3rem solid $white
+            transform rotate(-45deg) translate(-35%, -65%)
+            transform-origin left top
+            backface-visibility hidden
+            opacity 0

@@ -1,0 +1,43 @@
+.Checkbox
+  display: inline-block
+  vertical-align: middle
+  position: relative
+  margin: 9px 11px 9px 0
+  &-control
+    display: none
+
+    &:checked
+      & ~ .Checkbox-label
+        background-color: #F2FCFF
+        border: 1px solid #3E9CE8
+        outline: none
+
+        &:before
+          opacity: 1
+
+
+  &-label
+    cursor: pointer
+    display: block
+    width: 19px
+    height: 19px
+    border-radius: 3px
+    background-color: #ffffff
+    border: 1px solid #D2D5D6
+    user-select: none
+    transition: background .2s,border .2s
+    position: relative
+    &:before
+      content: ''
+      background: url("../images/checked.png") no-repeat center
+      position: absolute
+      //top: 50%
+      //left: 50%
+      width: 100%
+      height: 100%
+      //border-left: .3rem solid #ffffff
+      //border-bottom: .3rem solid #ffffff
+      //transform: rotate(-45deg) translate(-35%, -65%)
+      //transform-origin: left top
+      //backface-visibility: hidden
+      opacity: 0

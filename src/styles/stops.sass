@@ -1,0 +1,45 @@
+.stops
+  position: relative
+  &__button
+    display: none
+    position: absolute
+    right: 0
+    background-color: transparent
+    color: #2196f3
+    text-transform: uppercase
+    font-size: 11px
+    cursor: pointer
+    border: none
+    &:focus
+      outline: none
+    &:hover
+      text-decoration: underline
+
+.stop
+  display: flex
+  align-items: center
+  padding: 0 15px
+  &:hover
+    background: #F1FCFF
+    .stops__button
+      display: block
+.currency
+  &-row
+    display: flex
+  &-btn
+    padding: 9px 21px
+    background-color: #ffffff
+    color: #2196F3
+    border: 1px solid #D2D5D6
+    cursor: pointer
+    &:first-child
+      border-radius: 5px 0 0 5px
+    &:last-child
+      border-radius: 0 5px 5px 0
+    &:hover
+      background-color: #F2FCFF
+    &:active, &:focus
+      color: #ffffff
+      background-color: #2196F3
+      border: 1px solid #2196F3
+
