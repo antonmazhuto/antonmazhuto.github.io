@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
+import React, {Component, Fragment} from 'react';
 import _ from 'lodash'
-import './styles/index.css'
+import cx from 'classnames'
+import './styles/App.scss'
 import {api} from "./API";
 import FlightInfo from "./components/flightInfo";
 import StopsFilter from "./components/stopsFilter";
@@ -12,7 +13,7 @@ class App extends Component {
     constructor(){
         super();
         this.state = {
-            tickets: [],
+            tickets: null,
             originalTickets: [],
             stops: [],
             appliedFilters: {
@@ -20,9 +21,9 @@ class App extends Component {
             },
             currency: {
                 USD: null,
-                EUR: null
+                EUR: null,
             },
-            selectedCurrency: null
+            selectedCurrency: {label: 'RUB'}
         }
     }
 
@@ -32,12 +33,9 @@ class App extends Component {
     }
 
     getTickets = async () => {
-        const tickets = await api.getTickets();
+        const tickets = await api.getTickets() || [];
         const stops = _.uniq(tickets.tickets.map(ticket => ticket.stops)).sort();
-        this.setState({tickets: tickets.tickets, stops, originalTickets: tickets.tickets});
-
-
-
+        this.setState({tickets: tickets.tickets, stops, originalTickets: tickets.tickets, appliedFilters: {stops: stops}});
     };
 
     getCurrency = async () => {
@@ -47,7 +45,7 @@ class App extends Component {
 
         this.setState({currency: {
                 USD: Math.round(USD),
-                EUR: Math.round(EUR)
+                EUR: Math.round(EUR),
             }})
     }
 
@@ -62,32 +60,26 @@ class App extends Component {
                 const stop = ticket.stops;
                 if (stops.length > 0 && !stops.includes(stop)) continue;
 
-                filtrationResults.push(ticket)
+                stops.length > 0 && filtrationResults.push(ticket)
             }
         } else return unfilteredTickets; //by default
 
         return filtrationResults
     }
 
-    onChangeAllStops = (item) => {
-        const {appliedFilters, originalTickets} = this.state;
-        const exist = appliedFilters.stops.some(s=> item.includes(s))
-        if (exist){
-            appliedFilters.stops = []
-            item.map(stop => appliedFilters.stops.filter(r => r !== stop))
-        } else {
-            appliedFilters.stops = item
-        }
-        let tickets = this.filterTickets(originalTickets, appliedFilters)
-
-        this.setState({appliedFilters, tickets})
-    }
-
     onChangeStops = (item, only = false) => {
-        const {appliedFilters, originalTickets} = this.state;
+        const {appliedFilters, originalTickets, stops} = this.state;
         if (only){
             appliedFilters.stops = [item]
-        } else{
+        } else if (item.length === stops.length){
+            const existAll = item.every(s => appliedFilters.stops.includes(s))
+            if (existAll){
+                appliedFilters.stops = []
+            } else {
+                appliedFilters.stops = item
+            }
+        }
+        else{
 
             const existing = appliedFilters.stops.findIndex(c => c === item);
             if (existing >= 0) { // remove
@@ -140,19 +132,26 @@ class App extends Component {
         const {currency} = this.state;
         switch (name) {
             case 'USD':
-                this.setState({selectedCurrency: {value: currency.USD, symbol: '$'}});
+                this.setState({selectedCurrency: {value: currency.USD, label: 'USD', symbol: '$'}});
                 break;
             case 'EUR':
-                this.setState({selectedCurrency: {value: currency.EUR, symbol: '€'}});
+                this.setState({selectedCurrency: {value: currency.EUR, label: 'EUR', symbol: '€'}});
                 break;
             default:
-                this.setState({selectedCurrency: null})
+                this.setState({selectedCurrency: {label: 'RUB'}})
         }
     };
 
+    resetFilters = () => {
+        const {stops, originalTickets} = this.state;
+
+        this.setState({tickets: originalTickets, appliedFilters: {stops: stops}})
+    }
+
     render() {
-        const {tickets, stops, appliedFilters} = this.state;
-        console.log(appliedFilters.stops)
+        const {originalTickets, tickets, stops, appliedFilters, selectedCurrency} = this.state;
+        console.log(this.state.selectedCurrency);
+        // const currencyBtn = cx('currency-btn', {'currency-btn__active': curr === selectedCurrency.label});
         return (
             <div className='app-container'>
                 <div className = 'header'>
@@ -166,7 +165,8 @@ class App extends Component {
                                 <div className='currency-row'>
                                     {
                                         currencyOptions.map((curr, index) => {
-                                            return <a key={index} className='currency-btn' onClick={() => this.handleCurrency(curr)}>{curr}</a>
+                                            console.log(curr)
+                                            return <a key={index} className={cx('currency-btn', {'currency-btn__active': curr === selectedCurrency.label})} onClick={() => this.handleCurrency(curr)}>{curr}</a>
                                         })
                                     }
                                 </div>
@@ -180,7 +180,7 @@ class App extends Component {
                                         <Checkbox
                                             htmlId={`StopsCheckBox-all`}
                                             checked = {stops.length === appliedFilters.stops.length}
-                                            onChange={()=>this.onChangeAllStops(stops)}
+                                            onChange={()=>this.onChangeStops(stops)}
                                         />
                                         Все
                                     </div>
@@ -196,12 +196,16 @@ class App extends Component {
                     <div className='content right-pane'>
                         <div className='tickets'>
                             {
-                                tickets.map((ticket, key) => {
-                                    return this.renderTicket(ticket, key)
-                                })
-                            }
-                            {
-                                tickets.length === 0 && <div>Подождите, идет поиск перелетов!</div>
+                                !tickets ? <div className='alert-message'>Подождите, идет поиск перелетов!</div> : !tickets.length ?
+                                    <Fragment>
+                                        <div className='alert-message'>Найдено {originalTickets.length} перелетов, но ни один не соответствует заданным фильтрам.</div>
+                                        <button className = 'reset-filters' onClick={() => this.resetFilters()}>
+                                            Расслабить фильтры
+                                        </button>
+                                    </Fragment>:
+                                    tickets.map((ticket, key) => {
+                                        return this.renderTicket(ticket, key)
+                                    })
                             }
                         </div>
                     </div>

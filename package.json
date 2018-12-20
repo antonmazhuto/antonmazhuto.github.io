@@ -2,7 +2,7 @@
   "name": "aviasales",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://github.com/antonmazhuto/antonmazhuto.github.io",
+  "homepage": "https://antonmazhuto.github.io",
   "dependencies": {
     "autoprefixer": "7.1.6",
     "babel-core": "6.26.0",
@@ -65,7 +65,7 @@
     "build": "npm-run-all build-css build-js",
     "test": "node scripts/test.js --env=jsdom",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -b master -d build",
+    "deploy": "gh-pages -b master -d build"
   },
   "jest": {
     "collectCoverageFrom": [

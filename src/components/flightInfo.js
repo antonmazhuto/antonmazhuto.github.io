@@ -3,9 +3,15 @@ import moment from 'moment'
 import 'moment/locale/ru'
 import {numberText} from "../helpers";
 import TurkishImg from '../images/turkish_airlines.png'
+import cx from 'classnames'
 
 const FlightInfo = ({values}) => {
     const stopsCount = values.stops ? values.stops + numberText(values.stops, [' Пересадка', ' Пересадки', ' Пересадок']) : null;
+    const stopsClass = cx(
+        'flight-stops',
+        {'flight-stops-line': values.stops > 0}
+        );
+
     return(
         <Fragment>
             <div className = 'price'>
@@ -21,7 +27,7 @@ const FlightInfo = ({values}) => {
             <div className = 'ticket-info'>
                 <div className = 'flight-time'>
                     <div className = 'departure_time'>{values.departureTime}</div>
-                    <div className = 'flight-stops'>{stopsCount}</div>
+                    <div className = {stopsClass}>{stopsCount}</div>
                     <div className = 'arrival_time'>{values.arrivalTime}</div>
                 </div>
                 <div className = 'flight-airport'>
