@@ -9,7 +9,7 @@
  ```
  yarn start
  ```
- DEMO: [here](https://github.com/antonmazhuto/antonmazhuto.github.io)
+ DEMO: [here](https://antonmazhuto.github.io)
  
  __based on React Create App.__<br>
  _Created by Mazhuto Anton_
