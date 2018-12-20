@@ -100,7 +100,7 @@ class App extends Component {
         if (!ticket) return;
 
         const flightInfoValues ={
-            price: selectedCurrency!==null ? Math.round(ticket.price / selectedCurrency.value) + selectedCurrency.symbol : ticket.price + '₽',
+            price: selectedCurrency.label!=='RUB' ? Math.round(ticket.price / selectedCurrency.value) + selectedCurrency.symbol : ticket.price + '₽',
             departureTime: ticket.departure_time,
             departureDate: ticket.departure_date,
             arrivalTime: ticket.arrival_time,
