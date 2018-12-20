@@ -150,8 +150,6 @@ class App extends Component {
 
     render() {
         const {originalTickets, tickets, stops, appliedFilters, selectedCurrency} = this.state;
-        console.log(this.state.selectedCurrency);
-        // const currencyBtn = cx('currency-btn', {'currency-btn__active': curr === selectedCurrency.label});
         return (
             <div className='app-container'>
                 <div className = 'header'>
@@ -165,7 +163,6 @@ class App extends Component {
                                 <div className='currency-row'>
                                     {
                                         currencyOptions.map((curr, index) => {
-                                            console.log(curr)
                                             return <a key={index} className={cx('currency-btn', {'currency-btn__active': curr === selectedCurrency.label})} onClick={() => this.handleCurrency(curr)}>{curr}</a>
                                         })
                                     }
